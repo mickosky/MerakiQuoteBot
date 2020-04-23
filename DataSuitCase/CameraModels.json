@@ -1,0 +1,14 @@
+﻿[{
+  "title": "MV12N-HW",
+  "value": "MV12N-HW",
+  "type": "indoor",
+  "price": 2422
+},
+     {"title":"MV12W-HW","value":"MV12W-HW","type":"indoor","price":2422},
+     {"title":"MV12WE-HW","value":"MV12WE-HW","type":"indoor","price":6999},
+{"title":"MV22-HW","value":"MV22-HW","type":"indoor","price":23423},
+
+{"title":"MV32-HW","value":"MV32-HW","type":"indoor","price":92623},
+
+{"title":"MV72-HW","value":"MV72-HW","type":"outdoor","price":8207}
+]

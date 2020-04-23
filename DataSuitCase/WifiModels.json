@@ -1,0 +1,23 @@
+﻿[{
+  "title": "MR42E-HW",
+  "value": "MR42E-HW",
+  "type": "indoor",
+  "price": 1000
+},
+// "MR45-HW",
+{"title":"MR45-HW","value":"MR45-HW","type":"indoor","price":2444},
+// "MR52-HW",
+{"title":"MR52-HW","value":"MR52-HW","type":"indoor","price":2444},
+// "MR53-HW",
+{"title":"MR53-HW","value":"MR53-HW","type":"indoor","price":2444},
+// "MR53E-HW",
+{"title":"MR53E-HW","value":"MR53E-HW","type":"indoor","price":2444},
+// "MR55-HW",
+{"title":"MR55-HW","value":"MR55-HW","type":"indoor","price":2444},
+// "MR70-HW",
+{"title":"MR70-HW","value":"MR70-HW","type":"outdoor","price":3000},
+// "MR74-HW",
+{"title":"MR74-HW","value":"MR74-HW","type":"outdoor","price":3000},
+// "MR84-HW"
+{"title":"MR84-HW","value":"MR84-HW","type":"outdoor","price":3000}
+    ]

@@ -1,0 +1,47 @@
+﻿[
+  {
+    "title": "MS120-8",
+    "value": "MS120-8-HW",
+    "price": 680
+  },
+  {
+    "title": "MS120-24",
+    "value": "MS120-24-HW",
+    "price": 895
+  },
+  {
+    "title": "MS120-48",
+    "value": "MS120-48-HW",
+    "price": 895
+  },
+  {
+    "title": "MS120-8LP",
+    "value": "MS120-8LP-HW",
+    "price": 1620
+  },
+  {
+    "title": "MS120-8FP",
+    "value": "MS120-8FP-HW",
+    "price": 680
+  },
+  {
+    "title": "MS120-24P",
+    "value": "MS120-24P-HW",
+    "price": 6400
+  },
+  {
+    "title": "MS120-48FP",
+    "value": "MS120-48FP-HW",
+    "price": 7384
+  },
+  {
+    "title": "MS120-48LP",
+    "value": "MS120-48LP-HW",
+    "price": 6253
+  },
+  {
+    "title": "MS120-48FP",
+    "value": "MS120-48FP-HW",
+    "price": 45242
+  }
+]

@@ -1,0 +1,38 @@
+﻿<Properties StartupConfiguration="{A65B5191-08F6-47AD-A0E9-59C2AD5B4D38}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Models/QuoteBasketModel.cs">
+    <Files>
+      <File FileName="Bots/EchoBot.cs" Line="921" Column="9" />
+      <File FileName="DataSuitCase/FireWallModels.json" Line="19" Column="26" />
+      <File FileName="Utils/WebServicesFactory.cs" Line="44" Column="12" />
+      <File FileName="Utils/ProductUtil.cs" Line="7" Column="30" />
+      <File FileName="Models/QuoteBasketModel.cs" Line="18" Column="35" />
+      <File FileName="DataSuitCase/SwitchModels.json" Line="30" Column="18" />
+      <File FileName="Models/CustomerModel.cs" Line="1" Column="1" />
+      <File FileName="Utils/DealsUtil.cs" Line="90" Column="57" />
+      <File FileName="Models/QuoteBotAccessors.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="EchoBot" expanded="True">
+            <Node name="EchoBot" expanded="True">
+              <Node name="Bots" expanded="True" />
+              <Node name="DataSuitCase" expanded="True" />
+              <Node name="Models" expanded="True">
+                <Node name="QuoteBasketModel.cs" selected="True" />
+              </Node>
+              <Node name="Utils" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.EchoBot PreferredExecutionTarget="/Applications/Safari.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
