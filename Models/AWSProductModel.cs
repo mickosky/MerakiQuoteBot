@@ -6,6 +6,7 @@ namespace Jurumani.BotBuilder.Models
     public class AWSProductModel
     {
         public listJurumaniCloudInventory_ModelsContent listJurumaniCloudInventory_Models { get; set; }
+
         public class listJurumaniCloudInventory_ModelsContent
         {
             public List<ItemContent> Items { get; set; }

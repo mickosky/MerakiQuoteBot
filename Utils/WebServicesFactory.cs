@@ -40,7 +40,7 @@ namespace Jurumani.BotBuilder.Utils
             var ProductRequest = new GraphQLRequest
             {
                 Query = @"query filter1($contains: String!, $notcontains: String!) {
-  listJurumaniCloudInventory_Models(filter: {SKU: {contains: $contains, notContains: $notcontains}}) {
+  listJurumaniCloudInventory_Models(limit:1000,filter: {SKU: {contains: $contains, notContains: $notcontains}}) {
     items {
       SKU
       LIST_PRICE_USD

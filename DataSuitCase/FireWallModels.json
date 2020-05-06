@@ -10,16 +10,6 @@
     "price": 4000
   },
   {
-    "title": "MX67C",
-    "value": "MX67C-HW",
-    "price": 5000
-  },
-  {
-    "title": "MX68CW",
-    "value": "MX68CW-HW-WW",
-    "price": 23432
-  },
-  {
     "title": "MX84",
     "value": "MX84-HW",
     "price": 28263
@@ -30,8 +20,8 @@
     "price": 28427
   },
   {
-    "title": "vMX100",
-    "value": "vMX100-HW",
+    "title": "MX100",
+    "value": "MX100-HW",
     "price": 234235
   }
 
