@@ -243,19 +243,19 @@ namespace Microsoft.BotBuilderSamples.Bots
                   {
                       new CardAction()
                       {
-                         Title="1YR",
+                         Title="1Y",
                          Value="1",
                          Type=ActionTypes.ImBack,
                       },
                     new CardAction()
                       {
-                         Title="3YR",
+                         Title="3Y",
                          Value="3",
                          Type=ActionTypes.ImBack,
                       },
                     new CardAction()
                       {
-                         Title="5YR",
+                         Title="5Y",
                          Value="5",
                          Type=ActionTypes.ImBack,
                       }
@@ -501,7 +501,7 @@ namespace Microsoft.BotBuilderSamples.Bots
            
             stepContext.Values["wifilicense"] = $"LIC-MR-{_wifilicensetype}-{_licenseduration}";
            
-            await stepContext.Context.SendActivityAsync($"LIC-MR-{_wifilicensetype}-{_licenseduration}");
+            //await stepContext.Context.SendActivityAsync($"LIC-MR-{_wifilicensetype}-{_licenseduration}");
             var _wifimodels= await WebServicesFactory.QueryProductData("MR", "LIC");
             var _models = ProductUtil.FilterforHardware(_wifimodels);
             var actionlist = new List<CardAction>() { };
@@ -693,11 +693,7 @@ namespace Microsoft.BotBuilderSamples.Bots
         #region CAMERADIALOG
         private async Task<DialogTurnResult> CameraModelStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            //using (StreamReader r = new StreamReader("DataSuitCase/CameraModels.json"))
-            //{
-            //    string json = r.ReadToEnd();
-            //    _cameramodels = JsonConvert.DeserializeObject<List<CameraModel>>(json);
-            //}
+           
             var _cameramodels = await WebServicesFactory.QueryProductData("MV", "LIC");
             var _models = ProductUtil.FilterforHardware(_cameramodels);
             var actionlist = new List<CardAction>() { };
@@ -827,11 +823,7 @@ namespace Microsoft.BotBuilderSamples.Bots
             }
 
 
-            //using (StreamReader r = new StreamReader("DataSuitCase/FireWallModels.json"))
-            //{
-            //    string json = r.ReadToEnd();
-            //    _firewallmodels = JsonConvert.DeserializeObject<List<ProductModel>>(json);
-            //}
+          
             var  _firewallmodels = await WebServicesFactory.QueryProductData("MX", "LIC");
              //filter for only hardware SKU
             var actionlist = new List<CardAction>() { };
@@ -888,7 +880,7 @@ namespace Microsoft.BotBuilderSamples.Bots
             //add function to request the price of the model
             _title = ProductUtil.generateSKU(_title);
             var _licensesku = $"LIC-{_title}-{_firewalllicensetype}-{_licensduration}";
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(_licensesku));
+           // await stepContext.Context.SendActivityAsync(MessageFactory.Text(_licensesku));
             var _firewalldata =await  WebServicesFactory.QueryProductData(_title, "LIC");
             var _firewalllicensedata = await WebServicesFactory.QueryProductData(_licensesku, "HW");
             if (_firewalldata.listJurumaniCloudInventory_Models.Items.Count == 0)
@@ -926,11 +918,6 @@ namespace Microsoft.BotBuilderSamples.Bots
         private async Task<DialogTurnResult> SwitchModelStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
 
-            //using (StreamReader r = new StreamReader("DataSuitCase/SwitchModels.json"))
-            //{
-            //    string json = r.ReadToEnd();
-            //    _switchmodels = JsonConvert.DeserializeObject<List<ProductModel>>(json);
-            //}
             var _switchmodels = await WebServicesFactory.QueryProductData("MS", "LIC");
 
             var actionlist = new List<CardAction>() { };
@@ -986,10 +973,10 @@ namespace Microsoft.BotBuilderSamples.Bots
             //return to menu if the sku wasnt found
            
             var _licenseparam = $"{_strippedsku}-{_licenseduration}";
-            await stepContext.Context.SendActivityAsync(_licenseparam);
+            //await stepContext.Context.SendActivityAsync(_licenseparam);
             var _switchdata = await WebServicesFactory.QueryProductData(_title, "LIC");
             var _switchlicensedata = await WebServicesFactory.QueryProductData(_licenseparam,"HW");
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("sku" + _switchlicensedata.listJurumaniCloudInventory_Models.Items[0].SKU));
+            //await stepContext.Context.SendActivityAsync(MessageFactory.Text("sku" + _switchlicensedata.listJurumaniCloudInventory_Models.Items[0].SKU));
             if (_switchdata.listJurumaniCloudInventory_Models.Items.Count == 0)
             {
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Product {_title} wasn't found in the catalog"));
@@ -1024,45 +1011,7 @@ namespace Microsoft.BotBuilderSamples.Bots
         #endregion
 
         #region WIFISTEPS
-        //private async Task<DialogTurnResult> WifiModelStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        //{
-        //    //using (StreamReader r = new StreamReader("Datasuitcase/WifiModels.json"))
-        //    //{
-        //    //    string json = r.ReadToEnd();
-        //    //    _wifimodels = JsonConvert.DeserializeObject<List<ProductModel>>(json);
-        //    //}
-        //   var _wifimodels= await WebServicesFactory.QueryProductData("MR", "LIC");
-        //    var actionlist = new List<CardAction>() { };
-        //    _wifimodels.ForEach(model =>
-        //    {
-
-        //        actionlist.Add(new CardAction
-        //        {
-        //            Title = model.title,
-        //            Type = ActionTypes.ImBack,
-        //            Value = model.title
-
-        //        });
-
-        //    });
-
-        //    var response = MessageFactory.Text($"Please select a model? ");
-        //    response.SuggestedActions = new SuggestedActions()
-        //    {
-        //        Actions = actionlist
-
-
-        //    };
-        //    // var res=await WebServicesFactory.QueryProductData("MS120-24-HW", "LIC");
-        //    // await stepContext.Context.SendActivityAsync(MessageFactory.Text(res.ToString()));
-        //    return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
-        //    {
-        //        Prompt = response
-
-
-        //    });
-
-        //}
+ 
 
 
         private async Task<DialogTurnResult> WifiQuantityStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
