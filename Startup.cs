@@ -42,13 +42,7 @@ namespace Microsoft.BotBuilderSamples
             var conversationState = new ConversationState(storage);
             services.AddSingleton(conversationState);
             
-            //services.AddSingleton<CustomerProfileDialog>();
-           // services.AddSingleton<MerakiDeviceBoMDialog>();
-            //services.AddSingleton<AddMoreDevicesDialog>();
-            //services.AddSingleton<WifiDialog>();
-            //services.AddSingleton<IntroDialog>();
-            //services.AddSingleton<FirewallDialog>();
-            //services.AddSingleton<SwitchDialog>();
+          
            
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot. 
             services.AddTransient<IBot, EchoBot>();

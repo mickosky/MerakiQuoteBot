@@ -1,20 +1,27 @@
 ﻿<Properties StartupConfiguration="{A65B5191-08F6-47AD-A0E9-59C2AD5B4D38}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="AdapterWithErrorHandler.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="README.md">
     <Files>
-      <File FileName="Bots/EchoBot.cs" Line="976" Column="6" />
-      <File FileName="DataSuitCase/FireWallModels.json" Line="3" Column="19" />
-      <File FileName="Utils/WebServicesFactory.cs" Line="55" Column="51" />
-      <File FileName="Utils/ProductUtil.cs" Line="35" Column="18" />
+      <File FileName="Bots/EchoBot.cs" Line="124" Column="18" />
+      <File FileName="DataSuitCase/FireWallModels.json" />
+      <File FileName="Utils/WebServicesFactory.cs" />
+      <File FileName="Utils/ProductUtil.cs" />
       <File FileName="Models/QuoteBasketModel.cs" />
       <File FileName="DataSuitCase/SwitchModels.json" />
       <File FileName="Models/CustomerModel.cs" />
       <File FileName="Utils/DealsUtil.cs" />
-      <File FileName="Models/QuoteBotAccessors.cs" Line="1" Column="1" />
-      <File FileName="DataSuitCase/CameraModels.json" Line="1" Column="1" />
-      <File FileName="Models/ProductModel.cs" Line="1" Column="1" />
-      <File FileName="Models/AWSProductModel.cs" Line="10" Column="62" />
-      <File FileName="Utils/CompanyUtil.cs" Line="1" Column="1" />
-      <File FileName="AdapterWithErrorHandler.cs" Line="22" Column="88" />
+      <File FileName="Models/QuoteBotAccessors.cs" />
+      <File FileName="DataSuitCase/CameraModels.json" />
+      <File FileName="Models/ProductModel.cs" />
+      <File FileName="Models/AWSProductModel.cs" />
+      <File FileName="Utils/CompanyUtil.cs" />
+      <File FileName="AdapterWithErrorHandler.cs" />
+      <File FileName="appsettings.json" />
+      <File FileName="Utils/CustomerUtil.cs" />
+      <File FileName="Utils/AWSFactory.cs" />
+      <File FileName="Dialogs/IntroDialog.cs" />
+      <File FileName="Controllers/BotController.cs" />
+      <File FileName="Startup.cs" />
+      <File FileName="README.md" Line="1" Column="5" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -22,10 +29,12 @@
           <Node name="EchoBot" expanded="True">
             <Node name="EchoBot" expanded="True">
               <Node name="Bots" expanded="True" />
+              <Node name="Controllers" expanded="True" />
               <Node name="DataSuitCase" expanded="True" />
               <Node name="Dialogs" expanded="True" />
               <Node name="Models" expanded="True" />
-              <Node name="AdapterWithErrorHandler.cs" selected="True" />
+              <Node name="Utils" expanded="True" />
+              <Node name="README.md" selected="True" />
             </Node>
           </Node>
         </State>
@@ -36,7 +45,9 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/couragek/Documents/Azure/MerakiQuoteBot-src/Utils/WebServicesFactory.cs" relfile="Utils/WebServicesFactory.cs" line="84" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>

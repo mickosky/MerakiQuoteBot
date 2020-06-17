@@ -8,15 +8,11 @@ using Microsoft.Bot.Builder;
 
 using Microsoft.Bot.Schema;
 using Jurumani.BotBuilder.Utils;
-using Microsoft.Extensions.Logging;
+
 using Microsoft.Bot.Builder.Dialogs;
 using Jurumani.BotBuilder.Dialogs;
 using Jurumani.BotBuilder.Models;
 using Microsoft.Extensions.Configuration;
-using System.IO;
-using Newtonsoft.Json;
-using Microsoft.Bot.Builder.Dialogs.Choices;
-using System.Linq;
 
 namespace Microsoft.BotBuilderSamples.Bots
 {
@@ -138,30 +134,30 @@ namespace Microsoft.BotBuilderSamples.Bots
             else if (turnContext.Activity.Type == ActivityTypes.Event)
             {
 
-                if (turnContext.Activity.Type == "webchat/join")
-                {
-                    var dialogContext =await _dialogs.CreateContextAsync(turnContext, cancellationtoken);
-                    await turnContext.SendActivitiesAsync(new Activity[] {
-                new Activity { Type = ActivityTypes.Typing },
-                new Activity { Type = "delay", Value= 5000 },
+            //    if (turnContext.Activity.Type == "webchat/join")
+            //    {
+            //        var dialogContext =await _dialogs.CreateContextAsync(turnContext, cancellationtoken);
+            //        await turnContext.SendActivitiesAsync(new Activity[] {
+            //    new Activity { Type = ActivityTypes.Typing },
+            //    new Activity { Type = "delay", Value= 5000 },
                 
-            },
-            cancellationtoken);
-                    var res = turnContext.Activity.CreateReply();
-                    var card = new HeroCard()
-                    {
-                        Title = $"Hi, I'm MeriQ. ",
-                        Subtitle = "Welcome to Jurumani Cloud Solutions sales division.",
-                        Text = $"  I can help you make quotes. You can start by choosing Create Quote,or type 'quote' or End to stop chatting",
+            //},
+            //cancellationtoken);
+            //        var res = turnContext.Activity.CreateReply();
+            //        var card = new HeroCard()
+            //        {
+            //            Title = $"Hi, I'm MeriQ. ",
+            //            Subtitle = "Welcome to Jurumani Cloud Solutions sales division.",
+            //            Text = $"  I can help you make quotes. You can start by choosing Create Quote,or type 'quote' or End to stop chatting",
 
-                    };
-                    res.Attachments = new List<Attachment>() { card.ToAttachment() };
+            //        };
+            //        res.Attachments = new List<Attachment>() { card.ToAttachment() };
 
-                    await turnContext.SendActivityAsync(res, cancellationtoken);
-                    await dialogContext.BeginDialogAsync("IntroDialog", null, cancellationtoken);
-                }
-            }
-            {
+            //        await turnContext.SendActivityAsync(res, cancellationtoken);
+            //        await dialogContext.BeginDialogAsync("IntroDialog", null, cancellationtoken);
+            //    }
+            //}
+            //{fae
 
             }
 
@@ -491,17 +487,19 @@ namespace Microsoft.BotBuilderSamples.Bots
             var _basket =await  _botAccessors.QuoteBasket.GetAsync(stepContext.Context, () => new QuoteBasketModel(), cancellationToken);
             var _licenseduration = _basket.licenseDuration;
             var _wifilicensetype = stepContext.Result.ToString();
-            if (_wifilicensetype == "Advanced")
+            if (_wifilicensetype == "Advanced" || _wifilicensetype== "ADV")
             {
                 _wifilicensetype = "ADV";
+                stepContext.Values["wifilicense"] = $"LIC-MR-{_wifilicensetype}-{_licenseduration}";
             }
-            else if (_wifilicensetype == "Enterprise") {
+            else if (_wifilicensetype == "Enterprise" || _wifilicensetype == "ENT") {
                 _wifilicensetype="ENT";
+                stepContext.Values["wifilicense"] = $"LIC-{_wifilicensetype}-{_licenseduration}";
             }
            
-            stepContext.Values["wifilicense"] = $"LIC-MR-{_wifilicensetype}-{_licenseduration}";
+            
            
-            //await stepContext.Context.SendActivityAsync($"LIC-MR-{_wifilicensetype}-{_licenseduration}");
+            //await stepContext.Context.SendActivityAsync($"{stepContext.Values["wifilicense"]}");
             var _wifimodels= await WebServicesFactory.QueryProductData("MR", "LIC");
             var _models = ProductUtil.FilterforHardware(_wifimodels);
             var actionlist = new List<CardAction>() { };
@@ -591,10 +589,10 @@ namespace Microsoft.BotBuilderSamples.Bots
         private async Task<DialogTurnResult> EndOrRestartStepAsync
            (WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var response = MessageFactory.Text("Would you like to add another one?");
+            var response = MessageFactory.Text("Would you like to add another device?");
             response.SuggestedActions = new SuggestedActions()
             {
-                Actions = new List<CardAction>()
+                Actions = new List<CardAction>() 
                 {
                     new CardAction(){
                         Title="Yes",
@@ -674,7 +672,7 @@ namespace Microsoft.BotBuilderSamples.Bots
 
             await stepContext.Context.SendActivityAsync(res, cancellationtoken);
 
-            var response = MessageFactory.Text("Choose what you would like me to help you with:");
+            var response = MessageFactory.Text("Please Choose what you would like me to help you with:");
             response.SuggestedActions = new SuggestedActions()
             {
                 Actions = new List<CardAction>()
