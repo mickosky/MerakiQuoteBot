@@ -10,6 +10,7 @@ namespace Jurumani.BotBuilder.Models
         public string dealID { get; set; }
         public string licenseDuration { get; set; }
         public  List<BitrixProductRowModel> products { get; set; }
+        public double currentRate { get; set; }
         public override string ToString()
         {
             return $"You now have {products.Count} line items in your quote";

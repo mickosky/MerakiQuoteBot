@@ -27,7 +27,7 @@ namespace Microsoft.BotBuilderSamples.Bots
         private static string DEALENDPOINT = "crm.deal.add";
         private static string QUOTEENDPOINT = "crm.quote.add";
         private static string TERMS = "Quotation valid for 7 days , and subject to an exchange current rand rate";
-        private readonly QuoteBotAccessors _botAccessors;
+        private static QuoteBotAccessors _botAccessors;
         private readonly IConfiguration Configuration;
         private ProductModel wifiProduct;
 
@@ -202,6 +202,7 @@ namespace Microsoft.BotBuilderSamples.Bots
         }
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
+            
 
             var dialogContext = await _dialogs.CreateContextAsync(turnContext, cancellationToken);
 
@@ -212,6 +213,7 @@ namespace Microsoft.BotBuilderSamples.Bots
 
                     _botAccessors.ConversationState.CreateProperty<QuoteBasketModel>("QuoteBasket");
                     await dialogContext.BeginDialogAsync("IntroDialog", null, cancellationToken);
+
                 };
 
 
@@ -231,8 +233,9 @@ namespace Microsoft.BotBuilderSamples.Bots
 
         #region CUSTOMERPROFILE STEPS
         private async Task<DialogTurnResult> LicenseDurationStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationtoken)
-        {
-            var response = MessageFactory.Text("Please choose the duration for your license");
+        { 
+           
+            var response = MessageFactory.Text("Please choose the duration for your license " );
             response.SuggestedActions = new SuggestedActions()
             {
                 Actions = new List<CardAction>()
@@ -287,7 +290,7 @@ namespace Microsoft.BotBuilderSamples.Bots
             if (customerDetails.Count > 0)
             {
                 customerProfile = customerDetails[0];
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Hi {customerDetails[0].NAME} {customerDetails[0].LAST_NAME}  company id is {customerDetails[0].COMPANY_ID}"));
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Hi {customerDetails[0].NAME} {customerDetails[0].LAST_NAME}"));
                 customerProfile.NAME = customerDetails[0].NAME;
 
                 var Basket = await _botAccessors.QuoteBasket.GetAsync(stepContext.Context, () => new QuoteBasketModel());
@@ -461,7 +464,7 @@ namespace Microsoft.BotBuilderSamples.Bots
 
         #endregion
 
-        #region WIFIDIALOG STEPS
+        #region WIFIDIALOGSTEPS
         private async Task<DialogTurnResult> ChooseWifiLicenseType(WaterfallStepContext stepContext, CancellationToken cancellationtoken)
         {
             var reply = MessageFactory.Text("Choose the License type for your wifi device");
@@ -549,12 +552,13 @@ namespace Microsoft.BotBuilderSamples.Bots
             var _wifiProduct = new BitrixProductRowModel();
             var _wifilicense = new BitrixProductRowModel();
             var Basket = await _botAccessors.QuoteBasket.GetAsync(stepContext.Context, () => new QuoteBasketModel(), cancellationToken);
+            var _current_rate = Basket.currentRate;
             var _wifilicensesku = stepContext.Values["wifilicense"].ToString();
             var _wifimodel = (string)stepContext.Values["wifimodel"];
             var _wifiquantity = stepContext.Result.ToString();
             var _wifidata = await WebServicesFactory.QueryProductData(_wifimodel, "LIC");
             
-            var _price = _wifidata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD;
+            var _price = double.Parse(_wifidata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD);
             //get the license for the  device
             var _strippedsku =  ProductUtil.generateSKU(_wifimodel);
             _strippedsku = _strippedsku += Basket.licenseDuration;
@@ -563,12 +567,13 @@ namespace Microsoft.BotBuilderSamples.Bots
             
             await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions
             {
-                Prompt = MessageFactory.Text($"You ordered {_wifiquantity}x {_wifimodel} at ${_price} each")
+                Prompt = MessageFactory.Text($"You ordered {_wifiquantity}x {_wifimodel} at R{_price*_current_rate} each")
             }) ;
-            _wifiProduct.PRICE = float.Parse(_price);
+            var zar_price = _price * _current_rate;
+            _wifiProduct.PRICE = zar_price;
             _wifiProduct.PRODUCT_NAME = _wifimodel;
             _wifiProduct.QUANTITY = _wifiquantity;
-            _wifilicense.PRICE = float.Parse(_licensedata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD);
+            _wifilicense.PRICE = double.Parse(_licensedata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD) * _current_rate;
             _wifilicense.PRODUCT_NAME = _wifilicensesku;
             _wifilicense.QUANTITY = _wifiquantity;
             Basket.products.Add(_wifiProduct);
@@ -621,14 +626,14 @@ namespace Microsoft.BotBuilderSamples.Bots
             {
                 //save all state
                 var Basket = await _botAccessors.QuoteBasket.GetAsync(stepContext.Context, () => new QuoteBasketModel(), cancellationtoken);
-              
+                 
                 
                 var customercompany = CompanyUtil.GetCompanyById(Basket.customer.COMPANY_ID);
                
-                var dealid=DealsUtil.CreateDeal($"testdeal-{Basket.customer.NAME}", Basket.customer.COMPANY_ID, Basket.customer.COMPANY_ID, DEALENDPOINT);
+                var dealid=DealsUtil.CreateDeal($"Botdeal-{Basket.customer.NAME}", Basket.customer.COMPANY_ID, Basket.customer.COMPANY_ID, DEALENDPOINT);
                
                 var quoteexpirationdate = DateTime.Today.AddDays(7);
-                var quoteid = DealsUtil.CreateQuote(Basket.customer.NAME, Basket.customer.LAST_NAME, customercompany,dealid,Basket.customer.EMAIL[0].VALUE,quoteexpirationdate.ToString(),TERMS,QUOTEENDPOINT);
+                var quoteid = DealsUtil.CreateQuote(Basket.customer.NAME, Basket.customer.LAST_NAME, customercompany,dealid,Basket.customer.EMAIL[0].VALUE,quoteexpirationdate.ToString(),TERMS + Basket.currentRate,QUOTEENDPOINT);
                 var result = DealsUtil.AddProductsToQuote(quoteid, Basket.products, ADDPRODUCTSENDPOINT);
                 if (result == "True")
                 {
@@ -654,7 +659,11 @@ namespace Microsoft.BotBuilderSamples.Bots
         #region INTRODIALOGSTEPS
         private static async Task<DialogTurnResult> GreetingStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationtoken)
         {
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text("Please wait, checking USD-ZAR current rate ..."));
             var username = "";
+            var current_rate = await ProductUtil.ConvertProductPrice();
+            var Basket = await _botAccessors.QuoteBasket.GetAsync(stepContext.Context, () => new QuoteBasketModel(), cancellationtoken);
+            Basket.currentRate = current_rate;
             if (stepContext.Context.Activity.ChannelId == "telegram")
             {
                  username= stepContext.Context.Activity.AsMessageActivity().ChannelData.message.from.first_name;
@@ -664,14 +673,14 @@ namespace Microsoft.BotBuilderSamples.Bots
             var card = new HeroCard()
             {
                 Title = $"Hi {username}, I'm MeriQ. ",
-                Subtitle = "Welcome to Jurumani Cloud Solutions sales division.",
-                Text = $"  I can help you make quotes. You can start by choosing Create Quote,or type 'create quote' or 'Quit' to stop chatting",
+                Subtitle = $"Welcome to Jurumani Cloud Solutions sales division",
+                Text = $"  I can help you make quotes. You can start by choosing Create Quote,or type 'create quote' or 'Quit' to stop chatting. Please note your quote will be generated at the rate of { current_rate } per USD",
 
             };
             res.Attachments = new List<Attachment>() { card.ToAttachment() };
 
             await stepContext.Context.SendActivityAsync(res, cancellationtoken);
-
+           
             var response = MessageFactory.Text("Please Choose what you would like me to help you with:");
             response.SuggestedActions = new SuggestedActions()
             {
@@ -681,6 +690,7 @@ namespace Microsoft.BotBuilderSamples.Bots
                     new CardAction(){Title="Quit",Type=ActionTypes.ImBack,Value="quit"}
                 },
             };
+            await _botAccessors.QuoteBasket.SetAsync(stepContext.Context, Basket, cancellationtoken);
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = response }, cancellationtoken);
 
         }
@@ -688,7 +698,7 @@ namespace Microsoft.BotBuilderSamples.Bots
         
         #endregion
 
-        #region CAMERADIALOG
+        #region CAMERADIALOGSTEPS
         private async Task<DialogTurnResult> CameraModelStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
            
@@ -739,6 +749,7 @@ namespace Microsoft.BotBuilderSamples.Bots
         private async Task<DialogTurnResult> CameraSummaryStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var _Basket = await _botAccessors.QuoteBasket.GetAsync(stepContext.Context, () => new QuoteBasketModel(), cancellationToken);
+            var _current_rate = _Basket.currentRate;
             var _licenseduration = _Basket.licenseDuration;
             var _licensesku = $"LIC-MV-{_licenseduration}";
             var _cameramodel = new BitrixProductRowModel();
@@ -749,13 +760,18 @@ namespace Microsoft.BotBuilderSamples.Bots
             _cameramodel.QUANTITY = _quantity.ToString();
             var _cameraresponse= await WebServicesFactory.QueryProductData(_title,"LIC");
             var _cameralicensedata = await WebServicesFactory.QueryProductData(_licensesku, "HW");
-                        _cameramodel.PRICE=float.Parse(_cameraresponse.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD);
+            //convert the usd price to zar
+            var camera_zar_price = double.Parse(_cameraresponse.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD )* _current_rate;
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"The camera price is {_cameraresponse.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD}"));
+            var camera_license_price = double.Parse(_cameralicensedata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD) * _current_rate;
+            _cameramodel.PRICE = camera_zar_price;
             _cameralicense.PRODUCT_NAME = _licensesku;
-            _cameralicense.PRICE = float.Parse(_cameralicensedata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD);
+            _cameralicense.PRICE = camera_license_price;
             _cameralicense.QUANTITY = _quantity.ToString();
+            //calculate the zar equivalence of the license price
             await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions
             {
-                Prompt = MessageFactory.Text($"You ordered {stepContext.Result}x {stepContext.Values["cameramodel"]}  at {_cameramodel.PRICE} each")
+                Prompt = MessageFactory.Text($"You ordered {stepContext.Result}x {stepContext.Values["cameramodel"]}  at R{camera_zar_price} each")
             });
             _Basket.products.Add(_cameramodel);
             _Basket.products.Add(_cameralicense);
@@ -766,7 +782,7 @@ namespace Microsoft.BotBuilderSamples.Bots
 
         #endregion
 
-        #region FIREWALL STEPS
+        #region FIREWALLDIALOGSTEPS
         private async Task<DialogTurnResult> firewallLicenseTypeStepAsync(WaterfallStepContext stepContext,CancellationToken cancellationtoken)
         {
             var actionlist = new List<CardAction>() { };
@@ -869,6 +885,7 @@ namespace Microsoft.BotBuilderSamples.Bots
         private async Task<DialogTurnResult> FirewallSummaryStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var _Basket = await _botAccessors.QuoteBasket.GetAsync(stepContext.Context, () => new QuoteBasketModel(), cancellationToken);
+            var _current_rate = _Basket.currentRate;
             var _licensduration = _Basket.licenseDuration;
             var _firewalllicensetype = stepContext.Values["firewalllicensetype"].ToString();
             var _firewallmodel = new  BitrixProductRowModel();
@@ -887,15 +904,15 @@ namespace Microsoft.BotBuilderSamples.Bots
             }
             else
             {
-                var _price = _firewalldata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD;
+                var _price = double.Parse(_firewalldata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD);
                 await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions
                 {
-                    Prompt = MessageFactory.Text($"You ordered {_quantity}x {_title}  at ${_price} each")
+                    Prompt = MessageFactory.Text($"You ordered {_quantity}x {_title}  at R{_price*_current_rate} each")
                 });
-                _firewallmodel.PRICE = float.Parse(_price);
+                _firewallmodel.PRICE = _price*_current_rate;
                 _firewallmodel.QUANTITY = _quantity;
                 _firewallmodel.PRODUCT_NAME = _title;
-                _firewalllicense.PRICE = float.Parse(_firewalllicensedata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD);
+                _firewalllicense.PRICE = double.Parse(_firewalllicensedata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD)*_current_rate;
                 _firewalllicense.PRODUCT_NAME = _firewalllicensedata.listJurumaniCloudInventory_Models.Items[0].SKU;
                 _firewalllicense.QUANTITY = _quantity;
 
@@ -963,6 +980,7 @@ namespace Microsoft.BotBuilderSamples.Bots
             var _switchmodel = new BitrixProductRowModel();
             var _switchlicense = new BitrixProductRowModel();
             var _Basket= await _botAccessors.QuoteBasket.GetAsync(stepContext.Context, () => new QuoteBasketModel(), cancellationToken);
+            var _current_rate = _Basket.currentRate;
             var _licenseduration = _Basket.licenseDuration;
             var _title = stepContext.Values["switchmodel"].ToString();
        
@@ -981,18 +999,18 @@ namespace Microsoft.BotBuilderSamples.Bots
 
             }
             else {
-                var _price = float.Parse(_switchdata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD);
+                var _price = double.Parse(_switchdata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD)* _current_rate;
                 _switchmodel.PRICE = _price;
                 _switchmodel.PRODUCT_NAME = _title;
                 _switchmodel.QUANTITY = _quantity;
-                _switchlicense.PRICE =float.Parse( _switchlicensedata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD);
+                _switchlicense.PRICE =float.Parse( _switchlicensedata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD)*_current_rate;
                 _switchlicense.QUANTITY = _quantity;
                 _switchlicense.PRODUCT_NAME = _switchlicensedata.listJurumaniCloudInventory_Models.Items[0].SKU;
 
 
                 await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions
                 {
-                    Prompt = MessageFactory.Text($"You ordered {stepContext.Result}x {stepContext.Values["switchmodel"]}s at ${_price} each")
+                    Prompt = MessageFactory.Text($"You ordered {stepContext.Result}x {stepContext.Values["switchmodel"]}s at R{_price} each")
                 });
                 
                 _Basket.products.Add(_switchmodel);
@@ -1008,56 +1026,7 @@ namespace Microsoft.BotBuilderSamples.Bots
 
         #endregion
 
-        #region WIFISTEPS
- 
-
-
-        private async Task<DialogTurnResult> WifiQuantityStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var wifimodel = stepContext.Result.ToString();
-            stepContext.Values["wifimodel"] = wifimodel;
-
-            return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions
-            {
-                Prompt = MessageFactory.Text($"How many {wifimodel} would you like?")
-            });
-        }
-        private async Task<DialogTurnResult> WifiSummaryStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var Basket = await _botAccessors.QuoteBasket.GetAsync(stepContext.Context, () => new QuoteBasketModel(), cancellationToken);
-            var _wifiProduct = new BitrixProductRowModel();
-            var _title = stepContext.Values["wifimodel"].ToString();
-            var _quantity = stepContext.Result.ToString();
-            var _wifidata = await WebServicesFactory.QueryProductData(_title, "LIC");
-            if (_wifidata.listJurumaniCloudInventory_Models.Items.Count == 0)
-            {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Product {_title} was not found in our catalog"));
-
-            }
-            else
-            {
-                var _price = _wifidata.listJurumaniCloudInventory_Models.Items[0].LIST_PRICE_USD;
-                _wifiProduct.PRODUCT_NAME = _title;
-                _wifiProduct.QUANTITY = _quantity;
-                _wifiProduct.PRICE = float.Parse(_price);
-                await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions
-                {
-                    Prompt = MessageFactory.Text($"You ordered {stepContext.Result}x {stepContext.Values["wifimodel"] } at {_price} each ")
-                });
-               
-                Basket.products.Add(_wifiProduct);
-                var convostate = _botAccessors.ConversationState.LoadAsync(stepContext.Context, false, cancellationToken);
-
-                await _botAccessors.QuoteBasket.SetAsync(stepContext.Context, Basket, cancellationToken);
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text(Basket.ToString()));
-            }
-
-            
-            return await stepContext.ReplaceDialogAsync("AddMoreDevicesDialog"
-                );
-        }
-
-        #endregion
+       
 
     }
 }

@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Jurumani.BotBuilder.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using static Jurumani.BotBuilder.Models.AWSProductModel;
 
 namespace  Jurumani.BotBuilder.Utils
 {
+
     public static class ProductUtil
     {
+        private static string CURRENCY_CONVERTER_URL = "https://api.exchangeratesapi.io/latest?base=USD&symbols=ZAR";
         public static string SUFFIX = "-HW";
+        static HttpClient httpClient = new HttpClient();
         public static string generateSKU(string model)
         {
             string result = string.Empty;
@@ -37,6 +45,21 @@ namespace  Jurumani.BotBuilder.Utils
             return products;
 
         }
+        public static async Task<double> ConvertProductPrice()
+        {
+            double zar_price = 0;
+
+            HttpResponseMessage response = await httpClient.GetAsync(CURRENCY_CONVERTER_URL);
+            response.EnsureSuccessStatusCode();
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var jsonObject = JObject.Parse(responseBody);
+            zar_price = (double)jsonObject["rates"]["ZAR"];
+
+
+            return Math.Round(zar_price,2);
+
+        }
+
+
     }
-    
 }

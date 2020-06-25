@@ -27,9 +27,8 @@ namespace Jurumani.BotBuilder.Models
         {
             return $"Name: {NAME} \n" +
                 $"lastname:{LAST_NAME} \n" +
-                $"phone:{PHONE[0].VALUE}\n" +
-                $"email:{EMAIL[0].VALUE}\n" +
-                $"companyID:{COMPANY_ID}\n";
+                $"phone:0{PHONE[0].VALUE}\n" +
+                $"email:{EMAIL[0].VALUE}\n";
                 
         }
 

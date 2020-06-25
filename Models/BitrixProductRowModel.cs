@@ -5,7 +5,7 @@ namespace Jurumani.BotBuilder.Models
     {
        
             public string PRODUCT_NAME { get; set; }
-          public float PRICE { get; set; }
+          public double PRICE { get; set; }
           public string QUANTITY { get; set; }
         
     }

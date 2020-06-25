@@ -17,6 +17,7 @@
     <PackageReference Include="GraphQL.Client.Abstractions.Websocket" Version="3.0.2" />
     <PackageReference Include="GraphQL.Common" Version="1.0.3" />
     <PackageReference Include="GraphQL.Server.Authorization.AspNetCore" Version="3.4.0" />
+  
     <PackageReference Include="AdaptiveCards" Version="1.2.4" />
   </ItemGroup>
 
@@ -41,6 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Models\CustomerModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="**/*" />
+    <None Include="**/*" />
+    
   </ItemGroup>
   <ItemGroup>
     <None Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Models\CustomerModelcs">

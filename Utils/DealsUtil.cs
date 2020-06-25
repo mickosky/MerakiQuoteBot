@@ -54,7 +54,7 @@ namespace Jurumani.BotBuilder.Utils
             'STAGE_ID':'NEW',
             'DEAL_ID':'"+dealid+@"',
             'CLIENT_EMAIL':'"+customeremail+@"',
-            'CURRENCY_ID':'USD',
+            'CURRENCY_ID':'ZAR',
             'CATEGORY_ID':'2',
             'CLOSEDATE':'"+expirydate+@"',
             'TERMS':'"+terms+@"'

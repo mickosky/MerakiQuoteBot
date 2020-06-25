@@ -56,20 +56,12 @@ namespace Jurumani.BotBuilder.Utils
                 }
             };
 
-
-
-
             try
             {
                 var graphQLResponse = await graphQLClient.SendQueryAsync<AWSProductModel>(ProductRequest);
                 return graphQLResponse.Data;
 
-
-
             }
-
-
-
             catch (Exception ex)
             {
                 return new AWSProductModel() ;
